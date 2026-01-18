@@ -2,10 +2,17 @@
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { FactCheckResult, Verdict, GroundingSource } from "./types.ts";
 
-const API_KEY = process.env.API_KEY || '';
+// process.env is handled by Vite's define or standard environment injection
+const getApiKey = () => {
+  if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+    return process.env.API_KEY;
+  }
+  return '';
+};
 
 export const analyzeNews = async (claim: string): Promise<FactCheckResult> => {
-  const ai = new GoogleGenAI({ apiKey: API_KEY });
+  const apiKey = getApiKey();
+  const ai = new GoogleGenAI({ apiKey });
   
   const prompt = `
     Analyze the following news claim or snippet for its truthfulness and credibility.
@@ -33,24 +40,21 @@ export const analyzeNews = async (claim: string): Promise<FactCheckResult> => {
       },
     });
 
-    const text = response.text;
+    const text = response.text || '';
     const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
     
-    // Extract verdict and score using regex
     const verdictMatch = text.match(/VERDICT:\s*(TRUE|FALSE|MISLEADING|PARTIALLY TRUE|UNVERIFIED)/i);
     const scoreMatch = text.match(/SCORE:\s*(\d+)/);
     
     const verdict = (verdictMatch ? verdictMatch[1].toUpperCase() : Verdict.UNVERIFIED) as Verdict;
     const credibilityScore = scoreMatch ? parseInt(scoreMatch[1]) : 50;
     
-    // Clean analysis text (remove the header parts)
     const analysis = text
       .replace(/VERDICT:.*?\n/i, '')
       .replace(/SCORE:.*?\n/i, '')
       .replace(/ANALYSIS:\s*/i, '')
       .trim();
 
-    // Map grounding chunks to our source type
     const sources: GroundingSource[] = groundingChunks
       .filter(chunk => chunk.web)
       .map(chunk => ({
@@ -70,6 +74,6 @@ export const analyzeNews = async (claim: string): Promise<FactCheckResult> => {
     };
   } catch (error) {
     console.error("Gemini API Error:", error);
-    throw new Error("Failed to analyze news. Please try again later.");
+    throw new Error("Failed to analyze news. Please check your API key and try again.");
   }
 };
