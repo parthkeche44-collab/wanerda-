@@ -1,0 +1,5 @@
+{
+  "name": "Copy of VeriFact: AI News Verifier",
+  "description": "A sophisticated fact-checking application that leverages Gemini 3 with Google Search grounding to analyze claims, detect misinformation, and provide verified sources for real-time news verification.",
+  "requestFramePermissions": []
+}
