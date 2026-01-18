@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { FactCheckResult, Verdict } from '../types';
+import { FactCheckResult, Verdict } from '../types.ts';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface ResultCardProps {

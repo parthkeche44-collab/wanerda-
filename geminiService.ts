@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
-import { FactCheckResult, Verdict, GroundingSource } from "./types";
+import { FactCheckResult, Verdict, GroundingSource } from "./types.ts";
 
 const API_KEY = process.env.API_KEY || '';
 

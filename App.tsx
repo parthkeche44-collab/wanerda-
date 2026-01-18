@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { FactCheckResult, AppState } from './types';
-import { analyzeNews } from './geminiService';
-import ResultCard from './components/ResultCard';
+import { FactCheckResult, AppState } from './types.ts';
+import { analyzeNews } from './geminiService.ts';
+import ResultCard from './components/ResultCard.tsx';
 
 const App: React.FC = () => {
   const [claim, setClaim] = useState('');
